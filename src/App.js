@@ -10,8 +10,15 @@ const managerInitial = {
   pass: "",
 };
 
+// Only for testing
+const managerLogined = {
+  logined: true,
+  login: "admin",
+  pass: "admin",
+}
+
 function App() {
-  const [manager, setManager] = useState(managerInitial);
+  const [manager, setManager] = useState(managerLogined);
   return (
     <Box // Внешний контейнер
       sx={{
@@ -24,18 +31,19 @@ function App() {
         backgroundColor: (theme) => theme.palette.primary.mainBg,
       }}
     >
-      <Box sx={{
-        minHeight: "100vh",
-        width: "100%",
-        maxWidth: "1024px",
-      }}>
+      <Box
+        sx={{
+          minHeight: "100vh",
+          width: "100%",
+        }}
+      >
         <Routes>
           <Route path="/login" element={<Auth></Auth>}></Route>
           <Route path="/form" element={<UserDataForm></UserDataForm>}></Route>
           {!manager.logined && (
             <Route path="*" element={<Navigate to="/login" />}></Route>
           )}
-          {!manager.logined && (
+          {manager.logined && (
             <Route path="*" element={<Navigate to="/form" />}></Route>
           )}
         </Routes>
