@@ -24,7 +24,7 @@ const StyledInput = styled("input")(({ theme }) => ({
   // focus не работает
   transition: "border 0.3s",
   "&:focus": {
-    border: `1px solid ${(theme) => theme.palette.primary.blue.medium}`,
+    border: `1px solid ${theme.palette.primary.blue.medium}`,
   },
   [theme.breakpoints.up("xs")]: {
     fontSize: "12px",
@@ -48,7 +48,8 @@ const StyledInput = styled("input")(({ theme }) => ({
   },
 }));
 
-const StyledButton = styled("input")(({theme}) => ({
+const StyledButton = styled("input")(({ theme }) => ({
+  cursor: "pointer",
   width: "100%",
   backgroundColor: theme.palette.primary.blue.light,
   transition: "background-color 0.3s",
@@ -56,9 +57,9 @@ const StyledButton = styled("input")(({theme}) => ({
   fontSize: "18px",
   border: "none",
   borderRadius: "8px",
-  // &:hover {
-  //   background-color: ${({ theme }) => theme.palette.primary.blue.medium};
-  // }
+  "&:hover": {
+    backgroundColor: theme.palette.primary.blue.medium,
+  },
   [theme.breakpoints.up("xs")]: {
     fontSize: "12px",
     padding: "8px 4px 8px 4px",
@@ -79,7 +80,7 @@ const StyledButton = styled("input")(({theme}) => ({
     fontSize: "26px",
     padding: "16px 8px 16px 8px",
   },
-}))
+}));
 
 const Auth = () => {
   const {
@@ -114,10 +115,10 @@ const Auth = () => {
               md: "24px",
               sm: "18px",
               xs: "16px",
-            }
+            },
           }}
         >
-          Login
+          Вхід
         </Typography>
 
         <Box
@@ -129,16 +130,16 @@ const Auth = () => {
           }}
         >
           <StyledInput
-            placeholder="login"
+            placeholder="Логін"
             {...register("login", {
-              required: "Login is required",
+              required: "Поле є обов'язковим",
               minLength: {
                 value: 4,
-                message: "Min lenght is 4 symbols",
+                message: "Мінімум 4 символи",
               },
               maxLength: {
                 value: 20,
-                message: "Max lenght is 20 symbols",
+                message: "Максимум 20 символів",
               },
             })}
           />
@@ -148,7 +149,7 @@ const Auth = () => {
               sx={{
                 color: "red",
                 fontSize: {
-                  lg: "16px",
+                  lg: "14px",
                   md: "12px",
                   sm: "10px",
                   xs: "8px",
@@ -168,9 +169,9 @@ const Auth = () => {
         >
           <StyledInput
             type="password"
-            placeholder="password"
+            placeholder="Пароль"
             {...register("password", {
-              required: "Password is required",
+              required: "Поле є обов'язковим",
             })}
           />
           {errors?.password && (
