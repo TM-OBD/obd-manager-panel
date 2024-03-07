@@ -7,10 +7,12 @@ const StyledForm = styled("form")`
   flex-direction: column;
   gap: 8px;
   padding: 16px 32px 16px 32px;
+  background-color: ${({ theme }) => theme.palette.primary.mainBg};
   border: 1px solid ${({ theme }) => theme.palette.primary.blue.light};
   /* max-width: 50%;
   min-width: 40%; */
   border-radius: 12px;
+  z-index: 2;
 `;
 
 const StyledInput = styled("input")(({ theme }) => ({
