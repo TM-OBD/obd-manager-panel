@@ -1,12 +1,14 @@
 import styled from "@emotion/styled";
-import { Box, Typography } from "@mui/material";
+import { Alert, Box, Snackbar, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
+import { sendUserData } from "../../shared/Fetches";
+import { useState } from "react";
 
 const StyledForm = styled("form")`
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 16px 32px 16px 32px;
+  gap: 16px;
+  padding: 32px;
   background-color: ${({ theme }) => theme.palette.primary.mainBg};
   border: 1px solid ${({ theme }) => theme.palette.primary.blue.light};
   /* max-width: 50%;
@@ -89,9 +91,28 @@ const UserDataForm = () => {
     register,
     handleSubmit,
     formState: { errors },
-    getValues,
+    resetField,
   } = useForm();
-  const onSubmit = (data) => console.log(data, errors);
+
+  const [alert, setAlert] = useState({
+    open: false,
+    success: true,
+    vertical: "top",
+    horizontal: "right",
+  });
+
+  const onSubmit = async (userData) => {
+    // const serverData = sendUserData(userData)
+    setAlert({ ...alert, open: true, success: false });
+    setTimeout(() => {
+      setAlert({ ...alert, open: false });
+    }, 2000);
+
+    // resetField("name");
+    // resetField("surname");
+    // resetField("fathername");
+    // resetField("email");
+  };
 
   return (
     <Box
@@ -103,6 +124,20 @@ const UserDataForm = () => {
         height: "100vh",
       }}
     >
+      {alert && (
+        <Snackbar
+          open={alert.open}
+          autoHideDuration={2000}
+          anchorOrigin={{
+            vertical: alert.vertical,
+            horizontal: alert.horizontal,
+          }}
+        >
+          <Alert severity={alert.success ? "success": "error"} variant="filled" sx={{ width: "100%" }}>
+            {alert.success ? "Користувач успішно зареєстрований" : "Помилка при з'єднанні з сервером"}
+          </Alert>
+        </Snackbar>
+      )}
       <StyledForm
         onSubmit={handleSubmit(onSubmit)}
         sx={{
@@ -151,12 +186,12 @@ const UserDataForm = () => {
             }}
           >
             <StyledInput
-              placeholder="Іван"
+              placeholder="Ім'я (Обов'язково)"
               {...register("name", {
                 required: "Поле є обов'язковим",
                 minLength: {
-                  value: 4,
-                  message: "Мінімум 4 символи",
+                  value: 3,
+                  message: "Мінімум 3 символи",
                 },
                 maxLength: {
                   value: 20,
@@ -194,12 +229,12 @@ const UserDataForm = () => {
             }}
           >
             <StyledInput
-              placeholder="Іваненко"
+              placeholder="Прізвище (Обов'язково)"
               {...register("surname", {
                 required: "Поле є обов'язковим",
                 minLength: {
-                  value: 4,
-                  message: "Мінімум 4 символи",
+                  value: 3,
+                  message: "Мінімум 3 символи",
                 },
                 maxLength: {
                   value: 20,
@@ -238,9 +273,9 @@ const UserDataForm = () => {
           }}
         >
           <StyledInput
-            placeholder="Іванович"
+            placeholder="По-батькові (Необов'язково)"
             {...register("fathername", {
-              required: "Поле є обов'язковим",
+              // required: "Поле є обов'язковим",
               minLength: {
                 value: 4,
                 message: "Мінімум 4 символи",
@@ -281,7 +316,7 @@ const UserDataForm = () => {
           }}
         >
           <StyledInput
-            placeholder="ivanivanovich@mail.com"
+            placeholder="Пошта (Обов'язково)"
             {...register("email", {
               required: "Поле є обов'язковим",
               minLength: {
@@ -294,7 +329,7 @@ const UserDataForm = () => {
               },
               pattern: {
                 value: /^[\w-]+(?:\.[\w-]+)*@(?:[\w-]+\.)+[a-zA-Z]{2,7}$/,
-                message: "Некоректна пошта",
+                message: "Некоректна пошта, приклад mailadress@mail.com",
               },
             })}
           />
@@ -313,76 +348,6 @@ const UserDataForm = () => {
               }}
             >
               {errors.email.message}
-            </Typography>
-          )}
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "8px",
-          }}
-        >
-          <StyledInput
-            type="password"
-            placeholder="Пароль"
-            {...register("password", {
-              required: "Поле є обов'язковим",
-            })}
-          />
-          {errors?.password && (
-            <Typography
-              variant="body1"
-              sx={{
-                color: "red",
-                fontSize: {
-                  xl: "16px",
-                  lg: "14px",
-                  md: "12px",
-                  sm: "10px",
-                  xs: "8px",
-                },
-              }}
-            >
-              {errors.password.message}
-            </Typography>
-          )}
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "8px",
-          }}
-        >
-          <StyledInput
-            type="password"
-            placeholder="Повторіть пароль"
-            {...register("repeatPassword", {
-              required: "Поле є обов'язковим",
-              validate: {
-                matchesPassword: (value) => {
-                  const { password } = getValues();
-                  return value === password || "Паролі не збігаються";
-                },
-              },
-            })}
-          />
-          {errors?.repeatPassword && (
-            <Typography
-              variant="body1"
-              sx={{
-                color: "red",
-                fontSize: {
-                  xl: "16px",
-                  lg: "14px",
-                  md: "12px",
-                  sm: "10px",
-                  xs: "8px",
-                },
-              }}
-            >
-              {errors.repeatPassword.message}
             </Typography>
           )}
         </Box>
