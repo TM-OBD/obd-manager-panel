@@ -3,6 +3,7 @@ import { Alert, Box, Snackbar, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { sendUserData } from "../../shared/Fetches";
 import { useState } from "react";
+import { MuiTelInput } from "mui-tel-input";
 
 const StyledForm = styled("form")`
   display: flex;
@@ -93,25 +94,35 @@ const UserDataForm = () => {
     formState: { errors },
     resetField,
   } = useForm();
+  const [tel, setTel] = useState("+380")
 
-  const [alert, setAlert] = useState({
+  const [customAlert, setAlert] = useState({
     open: false,
-    success: true,
+    success: false,
     vertical: "top",
     horizontal: "right",
   });
 
+  const handleChangeTel = (value) => {
+    setTel(value)
+    console.log(value)
+  }
+
   const onSubmit = async (userData) => {
-    // const serverData = sendUserData(userData)
-    setAlert({ ...alert, open: true, success: false });
+    userData.tel = tel;
+    console.log(userData)
+    const serverData = await sendUserData(userData)
+    const {success} = serverData;
+    console.log(serverData)
+    setAlert({ ...customAlert, open: true, success });
     setTimeout(() => {
-      setAlert({ ...alert, open: false });
+      setAlert({ ...customAlert, open: false });
     }, 2000);
 
-    // resetField("name");
-    // resetField("surname");
-    // resetField("fathername");
-    // resetField("email");
+    resetField("name");
+    resetField("surname");
+    resetField("fathername");
+    resetField("email");
   };
 
   return (
@@ -124,16 +135,16 @@ const UserDataForm = () => {
         height: "100vh",
       }}
     >
-      {alert && (
+      {customAlert && (
         <Snackbar
-          open={alert.open}
+          open={customAlert.open}
           autoHideDuration={2000}
           anchorOrigin={{
-            vertical: alert.vertical,
-            horizontal: alert.horizontal,
+            vertical: customAlert.vertical,
+            horizontal: customAlert.horizontal,
           }}
         >
-          <Alert severity={alert.success ? "success": "error"} variant="filled" sx={{ width: "100%" }}>
+          <Alert severity={customAlert.success ? "success": "error"} variant="filled" sx={{ width: "100%" }}>
             {alert.success ? "Користувач успішно зареєстрований" : "Помилка при з'єднанні з сервером"}
           </Alert>
         </Snackbar>
@@ -308,6 +319,65 @@ const UserDataForm = () => {
             </Typography>
           )}
         </Box>
+        {/* <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "8px",
+          }}
+        >
+          <StyledInput
+            placeholder="Номер телефону (Обов'язково)"
+            {...register("tel", {
+              required: "Поле є обов'язковим",
+              minLength: {
+                value: 4,
+                message: "Мінімум 4 символи",
+              },
+              maxLength: {
+                value: 40,
+                message: "Максимум 40 символів",
+              },
+              pattern: {
+                value: /^[\w-]+(?:\.[\w-]+)*@(?:[\w-]+\.)+[a-zA-Z]{2,7}$/,
+                message: "Некоректний телефон, приклад mailadress@mail.com",
+              },
+            })}
+          ></StyledInput>
+
+          {errors?.tel && (
+            <Typography
+              variant="body1"
+              sx={{
+                color: "red",
+                fontSize: {
+                  xl: "16px",
+                  lg: "14px",
+                  md: "12px",
+                  sm: "10px",
+                  xs: "8px",
+                },
+              }}
+            >
+              {errors.tel.message}
+            </Typography>
+          )}
+        </Box> */}
+        <MuiTelInput sx={{
+          border: theme => `1px solid ${theme.palette.primary.blue.light}`,
+          borderRadius: "8px",
+          padding: "0 0 0 0",
+          ".css-1o9s3wi-MuiInputBase-input-MuiOutlinedInput-input": {
+            color: theme => theme.palette.primary.white.light,
+            fontSize: {
+              xl: "16px",
+              lg: "14px",
+              md: "12px",
+              sm: "10px",
+              xs: "8px",
+            },
+          }
+        }} defaultCountry="UA" onChange={handleChangeTel} value={tel} />
         <Box
           sx={{
             display: "flex",
