@@ -12,17 +12,15 @@ const StyledForm = styled("form")`
   padding: 32px;
   background-color: ${({ theme }) => theme.palette.primary.mainBg};
   border: 1px solid ${({ theme }) => theme.palette.primary.blue.light};
-  /* max-width: 50%;
-  min-width: 40%; */
   border-radius: 12px;
   z-index: 2;
 `;
 
 const StyledInput = styled("input")(({ theme }) => ({
+  display: "flex",
   width: "100%",
   backgroundColor: theme.palette.primary.mainBg,
   color: theme.palette.primary.white.light,
-  fontSize: "18px",
   borderRadius: "8px",
   border: `1px solid ${theme.palette.primary.blue.light}`,
   outline: "none",
@@ -94,7 +92,7 @@ const UserDataForm = () => {
     formState: { errors },
     resetField,
   } = useForm();
-  const [tel, setTel] = useState("+380")
+  const [tel, setTel] = useState("+380");
 
   const [customAlert, setAlert] = useState({
     open: false,
@@ -104,16 +102,17 @@ const UserDataForm = () => {
   });
 
   const handleChangeTel = (value) => {
-    setTel(value)
-    console.log(value)
-  }
+    setTel(value);
+    console.log(value);
+  };
 
   const onSubmit = async (userData) => {
-    userData.tel = tel;
-    console.log(userData)
-    const serverData = await sendUserData(userData)
-    const {success} = serverData;
-    console.log(serverData)
+    // Phone number without spaces
+    userData.tel = tel.replace(/\s/g, "");
+    console.log(userData);
+    const serverData = await sendUserData(userData);
+    const { success } = serverData;
+    console.log(serverData);
     setAlert({ ...customAlert, open: true, success });
     setTimeout(() => {
       setAlert({ ...customAlert, open: false });
@@ -123,6 +122,7 @@ const UserDataForm = () => {
     resetField("surname");
     resetField("fathername");
     resetField("email");
+    setTel("+380");
   };
 
   return (
@@ -144,8 +144,14 @@ const UserDataForm = () => {
             horizontal: customAlert.horizontal,
           }}
         >
-          <Alert severity={customAlert.success ? "success": "error"} variant="filled" sx={{ width: "100%" }}>
-            {alert.success ? "Користувач успішно зареєстрований" : "Помилка при з'єднанні з сервером"}
+          <Alert
+            severity={customAlert.success ? "success" : "error"}
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
+            {alert.success
+              ? "Користувач успішно зареєстрований"
+              : "Помилка при з'єднанні з сервером"}
           </Alert>
         </Snackbar>
       )}
@@ -178,7 +184,7 @@ const UserDataForm = () => {
             },
           }}
         >
-          Введіть дані кліента
+          Введіть дані кліента та ID пристрою
         </Typography>
 
         <Box
@@ -189,111 +195,17 @@ const UserDataForm = () => {
             gap: "8px",
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "8px",
-            }}
-          >
-            <StyledInput
-              placeholder="Ім'я (Обов'язково)"
-              {...register("name", {
-                required: "Поле є обов'язковим",
-                minLength: {
-                  value: 3,
-                  message: "Мінімум 3 символи",
-                },
-                maxLength: {
-                  value: 20,
-                  message: "Максимум 20 символів",
-                },
-                pattern: {
-                  value: /^[A-ZА-ЯЁҐЄІЇ][a-zа-яёґєії']{1,}$/u,
-                  message: "Тільки літери, перша - велика",
-                },
-              })}
-            />
-            {errors?.name && (
-              <Typography
-                variant="body1"
-                sx={{
-                  color: "red",
-                  fontSize: {
-                    xl: "16px",
-                    lg: "14px",
-                    md: "12px",
-                    sm: "10px",
-                    xs: "8px",
-                  },
-                }}
-              >
-                {errors.name.message}
-              </Typography>
-            )}
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "8px",
-            }}
-          >
-            <StyledInput
-              placeholder="Прізвище (Обов'язково)"
-              {...register("surname", {
-                required: "Поле є обов'язковим",
-                minLength: {
-                  value: 3,
-                  message: "Мінімум 3 символи",
-                },
-                maxLength: {
-                  value: 20,
-                  message: "Максимум 20 символів",
-                },
-                pattern: {
-                  value: /^[A-ZА-ЯЁҐЄІЇ][a-zа-яёґєії']{1,}$/u,
-                  message: "Тільки літери, перша - велика",
-                },
-              })}
-            />
-            {errors?.surname && (
-              <Typography
-                variant="body1"
-                sx={{
-                  color: "red",
-                  fontSize: {
-                    xl: "16px",
-                    lg: "14px",
-                    md: "12px",
-                    sm: "10px",
-                    xs: "8px",
-                  },
-                }}
-              >
-                {errors.surname.message}
-              </Typography>
-            )}
-          </Box>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "8px",
-          }}
-        >
           <StyledInput
-            placeholder="По-батькові (Необов'язково)"
-            {...register("fathername", {
-              // required: "Поле є обов'язковим",
+            placeholder="Ім'я (Обов'язково)"
+            {...register("name", {
+              required: "Поле є обов'язковим",
               minLength: {
-                value: 4,
-                message: "Мінімум 4 символи",
+                value: 3,
+                message: "Мінімум 3 символи",
               },
               maxLength: {
-                value: 40,
-                message: "Максимум 40 символів",
+                value: 20,
+                message: "Максимум 20 символів",
               },
               pattern: {
                 value: /^[A-ZА-ЯЁҐЄІЇ][a-zа-яёґєії']{1,}$/u,
@@ -301,7 +213,7 @@ const UserDataForm = () => {
               },
             })}
           />
-          {errors?.fathername && (
+          {errors?.name && (
             <Typography
               variant="body1"
               sx={{
@@ -315,95 +227,29 @@ const UserDataForm = () => {
                 },
               }}
             >
-              {errors.fathername.message}
+              {errors.name.message}
             </Typography>
           )}
-        </Box>
-        {/* <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "8px",
-          }}
-        >
-          <StyledInput
-            placeholder="Номер телефону (Обов'язково)"
-            {...register("tel", {
-              required: "Поле є обов'язковим",
-              minLength: {
-                value: 4,
-                message: "Мінімум 4 символи",
-              },
-              maxLength: {
-                value: 40,
-                message: "Максимум 40 символів",
-              },
-              pattern: {
-                value: /^[\w-]+(?:\.[\w-]+)*@(?:[\w-]+\.)+[a-zA-Z]{2,7}$/,
-                message: "Некоректний телефон, приклад mailadress@mail.com",
-              },
-            })}
-          ></StyledInput>
 
-          {errors?.tel && (
-            <Typography
-              variant="body1"
-              sx={{
-                color: "red",
-                fontSize: {
-                  xl: "16px",
-                  lg: "14px",
-                  md: "12px",
-                  sm: "10px",
-                  xs: "8px",
-                },
-              }}
-            >
-              {errors.tel.message}
-            </Typography>
-          )}
-        </Box> */}
-        <MuiTelInput sx={{
-          border: theme => `1px solid ${theme.palette.primary.blue.light}`,
-          borderRadius: "8px",
-          padding: "0 0 0 0",
-          ".css-1o9s3wi-MuiInputBase-input-MuiOutlinedInput-input": {
-            color: theme => theme.palette.primary.white.light,
-            fontSize: {
-              xl: "16px",
-              lg: "14px",
-              md: "12px",
-              sm: "10px",
-              xs: "8px",
-            },
-          }
-        }} defaultCountry="UA" onChange={handleChangeTel} value={tel} />
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "8px",
-          }}
-        >
           <StyledInput
-            placeholder="Пошта (Обов'язково)"
-            {...register("email", {
+            placeholder="Прізвище (Обов'язково)"
+            {...register("surname", {
               required: "Поле є обов'язковим",
               minLength: {
-                value: 4,
-                message: "Мінімум 4 символи",
+                value: 3,
+                message: "Мінімум 3 символи",
               },
               maxLength: {
-                value: 40,
-                message: "Максимум 40 символів",
+                value: 20,
+                message: "Максимум 20 символів",
               },
               pattern: {
-                value: /^[\w-]+(?:\.[\w-]+)*@(?:[\w-]+\.)+[a-zA-Z]{2,7}$/,
-                message: "Некоректна пошта, приклад mailadress@mail.com",
+                value: /^[A-ZА-ЯЁҐЄІЇ][a-zа-яёґєії']{1,}$/u,
+                message: "Тільки літери, перша - велика",
               },
             })}
           />
-          {errors?.email && (
+          {errors?.surname && (
             <Typography
               variant="body1"
               sx={{
@@ -417,10 +263,156 @@ const UserDataForm = () => {
                 },
               }}
             >
-              {errors.email.message}
+              {errors.surname.message}
             </Typography>
           )}
         </Box>
+
+        <StyledInput
+          placeholder="По-батькові (Необов'язково)"
+          {...register("fathername", {
+            // required: "Поле є обов'язковим",
+            minLength: {
+              value: 4,
+              message: "Мінімум 4 символи",
+            },
+            maxLength: {
+              value: 40,
+              message: "Максимум 40 символів",
+            },
+            pattern: {
+              value: /^[A-ZА-ЯЁҐЄІЇ][a-zа-яёґєії']{1,}$/u,
+              message: "Тільки літери, перша - велика",
+            },
+          })}
+        />
+        {errors?.fathername && (
+          <Typography
+            variant="body1"
+            sx={{
+              color: "red",
+              fontSize: {
+                xl: "16px",
+                lg: "14px",
+                md: "12px",
+                sm: "10px",
+                xs: "8px",
+              },
+            }}
+          >
+            {errors.fathername.message}
+          </Typography>
+        )}
+        <MuiTelInput
+          sx={{
+            border: (theme) => `1px solid ${theme.palette.primary.blue.light}`,
+            borderRadius: "8px",
+            padding: "0 0 0 0",
+            ".css-1o9s3wi-MuiInputBase-input-MuiOutlinedInput-input": {
+              color: (theme) => theme.palette.primary.white.light,
+              fontSize: {
+                xl: "20px",
+                lg: "18px",
+                md: "16px",
+                sm: "14px",
+                xs: "10px",
+              },
+            },
+            "& .css-gyyzhi-MuiInputBase-root-MuiOutlinedInput-root": {
+              // maxHeight: "30px"
+            },
+            "& .css-104c99h-MuiButtonBase-root-MuiIconButton-root": {
+              padding: 0,
+            },
+            "& .css-1o9s3wi-MuiInputBase-input-MuiOutlinedInput-input": {
+              padding: {
+                xl: "14px 6px",
+                lg: "14px 6px",
+                md: "14px 6px",
+                sm: "8px 4px",
+                xs: "8px 4px",
+              },
+              fontSize: {
+                xl: "20px",
+                lg: "18px",
+                md: "16px",
+                sm: "14px",
+                xs: "10px",
+              },
+            }
+          }}
+          defaultCountry="UA"
+          onChange={handleChangeTel}
+          value={tel}
+        />
+
+        <StyledInput
+          placeholder="Пошта (Обов'язково)"
+          {...register("email", {
+            required: "Поле є обов'язковим",
+            minLength: {
+              value: 4,
+              message: "Мінімум 4 символи",
+            },
+            maxLength: {
+              value: 40,
+              message: "Максимум 40 символів",
+            },
+            pattern: {
+              value: /^[\w-]+(?:\.[\w-]+)*@(?:[\w-]+\.)+[a-zA-Z]{2,7}$/,
+              message: "Некоректна пошта, приклад mailadress@mail.com",
+            },
+          })}
+        />
+        {errors?.email && (
+          <Typography
+            variant="body1"
+            sx={{
+              color: "red",
+              fontSize: {
+                xl: "16px",
+                lg: "14px",
+                md: "12px",
+                sm: "10px",
+                xs: "8px",
+              },
+            }}
+          >
+            {errors.email.message}
+          </Typography>
+        )}
+
+        <StyledInput
+          placeholder="ID пристрою"
+          {...register("deviceId", {
+            required: "Поле є обов'язковим",
+            minLength: {
+              value: 4,
+              message: "Мінімум 4 символи",
+            },
+            maxLength: {
+              value: 40,
+              message: "Максимум 40 символів",
+            },
+          })}
+        />
+        {errors?.deviceId && (
+          <Typography
+            variant="body1"
+            sx={{
+              color: "red",
+              fontSize: {
+                xl: "16px",
+                lg: "14px",
+                md: "12px",
+                sm: "10px",
+                xs: "8px",
+              },
+            }}
+          >
+            {errors.deviceId.message}
+          </Typography>
+        )}
 
         <StyledButton type="submit" />
       </StyledForm>
