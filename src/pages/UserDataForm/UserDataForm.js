@@ -195,77 +195,94 @@ const UserDataForm = () => {
             gap: "8px",
           }}
         >
-          <StyledInput
-            placeholder="Ім'я (Обов'язково)"
-            {...register("name", {
-              required: "Поле є обов'язковим",
-              minLength: {
-                value: 3,
-                message: "Мінімум 3 символи",
-              },
-              maxLength: {
-                value: 20,
-                message: "Максимум 20 символів",
-              },
-              pattern: {
-                value: /^[A-ZА-ЯЁҐЄІЇ][a-zа-яёґєії']{1,}$/u,
-                message: "Тільки літери, перша - велика",
-              },
-            })}
-          />
-          {errors?.name && (
-            <Typography
-              variant="body1"
-              sx={{
-                color: "red",
-                fontSize: {
-                  xl: "16px",
-                  lg: "14px",
-                  md: "12px",
-                  sm: "10px",
-                  xs: "8px",
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              flexGrow: 1,
+              gap: "8px",
+            }}
+          >
+            <StyledInput
+              placeholder="Ім'я (Обов'язково)"
+              {...register("name", {
+                required: "Поле є обов'язковим",
+                minLength: {
+                  value: 3,
+                  message: "Мінімум 3 символи",
                 },
-              }}
-            >
-              {errors.name.message}
-            </Typography>
-          )}
-
-          <StyledInput
-            placeholder="Прізвище (Обов'язково)"
-            {...register("surname", {
-              required: "Поле є обов'язковим",
-              minLength: {
-                value: 3,
-                message: "Мінімум 3 символи",
-              },
-              maxLength: {
-                value: 20,
-                message: "Максимум 20 символів",
-              },
-              pattern: {
-                value: /^[A-ZА-ЯЁҐЄІЇ][a-zа-яёґєії']{1,}$/u,
-                message: "Тільки літери, перша - велика",
-              },
-            })}
-          />
-          {errors?.surname && (
-            <Typography
-              variant="body1"
-              sx={{
-                color: "red",
-                fontSize: {
-                  xl: "16px",
-                  lg: "14px",
-                  md: "12px",
-                  sm: "10px",
-                  xs: "8px",
+                maxLength: {
+                  value: 20,
+                  message: "Максимум 20 символів",
                 },
-              }}
-            >
-              {errors.surname.message}
-            </Typography>
-          )}
+                pattern: {
+                  value: /^[A-ZА-ЯЁҐЄІЇ][a-zа-яёґєії']{1,}$/u,
+                  message: "Тільки літери, перша - велика",
+                },
+              })}
+            />
+            {errors?.name && (
+              <Typography
+                variant="body1"
+                sx={{
+                  color: "red",
+                  fontSize: {
+                    xl: "16px",
+                    lg: "14px",
+                    md: "12px",
+                    sm: "10px",
+                    xs: "8px",
+                  },
+                }}
+              >
+                {errors.name.message}
+              </Typography>
+            )}
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              flexGrow: 1,
+              gap: "8px",
+            }}
+          >
+            <StyledInput
+              placeholder="Прізвище (Обов'язково)"
+              {...register("surname", {
+                required: "Поле є обов'язковим",
+                minLength: {
+                  value: 3,
+                  message: "Мінімум 3 символи",
+                },
+                maxLength: {
+                  value: 20,
+                  message: "Максимум 20 символів",
+                },
+                pattern: {
+                  value: /^[A-ZА-ЯЁҐЄІЇ][a-zа-яёґєії']{1,}$/u,
+                  message: "Тільки літери, перша - велика",
+                },
+              })}
+            />
+            {errors?.surname && (
+              <Typography
+                variant="body1"
+                sx={{
+                  color: "red",
+                  fontSize: {
+                    xl: "16px",
+                    lg: "14px",
+                    md: "12px",
+                    sm: "10px",
+                    xs: "8px",
+                  },
+                }}
+              >
+                {errors.surname.message}
+              </Typography>
+            )}
+          </Box>
         </Box>
 
         <StyledInput
@@ -339,7 +356,7 @@ const UserDataForm = () => {
                 sm: "14px",
                 xs: "10px",
               },
-            }
+            },
           }}
           defaultCountry="UA"
           onChange={handleChangeTel}
