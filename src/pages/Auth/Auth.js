@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
-import { Box, Typography } from "@mui/material";
+import { Alert, Box, Snackbar, Typography } from "@mui/material";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 const StyledForm = styled("form")`
@@ -84,13 +85,54 @@ const StyledButton = styled("input")(({ theme }) => ({
   },
 }));
 
-const Auth = () => {
+const Auth = ({setManagerLogined}) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const onSubmit = (data) => console.log(data, errors);
+
+  const [customAlert, setAlert] = useState({
+    open: false,
+    success: false,
+    vertical: "top",
+    horizontal: "right",
+    message: "Помилка при з'єднанні з сервером",
+  });
+
+  // JUST FOR TESTING
+  const LOGIN = "admin";
+  const PASSWORD = "admin";
+
+  const onSubmit = (data) => {
+    const { login, password } = data;
+    if (!login || !password) {
+      setAlert({
+        ...customAlert,
+        open: true,
+        success: false,
+        message: "Уведіть коректні дані",
+      });
+      setTimeout(() => {
+        setAlert({ ...customAlert, open: false });
+      }, 2000);
+      return;
+    }
+    if (login !== LOGIN || password !== PASSWORD) {
+      setAlert({
+        ...customAlert,
+        open: true,
+        success: false,
+        message: "Логін або пароль введено невірно",
+      });
+      setTimeout(() => {
+        setAlert({ ...customAlert, open: false });
+      }, 2000);
+      return;
+    }
+    
+    setManagerLogined(true)
+  };
 
   return (
     <Box
@@ -102,6 +144,24 @@ const Auth = () => {
         height: "100vh",
       }}
     >
+      {customAlert && (
+        <Snackbar
+          open={customAlert.open}
+          autoHideDuration={2000}
+          anchorOrigin={{
+            vertical: customAlert.vertical,
+            horizontal: customAlert.horizontal,
+          }}
+        >
+          <Alert
+            severity={customAlert.success ? "success" : "error"}
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
+            {customAlert.message}
+          </Alert>
+        </Snackbar>
+      )}
       <StyledForm onSubmit={handleSubmit(onSubmit)}>
         <Typography
           variant="body1"

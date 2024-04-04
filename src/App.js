@@ -16,32 +16,19 @@ const StyledBackgroundImage = styled("img")`
   z-index: 1;
 `;
 
-const managerInitial = {
-  logined: false,
-  login: "",
-  pass: "",
-};
-
-// Only for testing
-const managerLogined = {
-  logined: true,
-  login: "admin",
-  pass: "admin",
-};
-
 function App() {
-  const [manager, setManager] = useState(managerLogined);
+  const [managerLogined, setManagerLogined] = useState(true);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    if(!manager.logined) {
-      navigate("/login")
-      return
+    if (!managerLogined) {
+      navigate("/login");
+      return;
     }
-    navigate("/form")
-    return
-  },[manager])
+    navigate("/form");
+    return;
+  }, [managerLogined]);
 
   return (
     <Box // Внешний контейнер
@@ -68,9 +55,16 @@ function App() {
           alt="Background"
         ></StyledBackgroundImage>
         <Routes>
-          {!manager.logined && <Route path="/login" element={<Auth></Auth>}></Route>}
-          {manager.logined && <Route path="/form" element={<UserDataForm></UserDataForm>}></Route>}
-          {manager.logined ? (
+          {!managerLogined && (
+            <Route
+              path="/login"
+              element={<Auth setManagerLogined={setManagerLogined}></Auth>}
+            ></Route>
+          )}
+          {managerLogined && (
+            <Route path="/form" element={<UserDataForm></UserDataForm>}></Route>
+          )}
+          {managerLogined ? (
             <Route path="*" element={<Navigate to="/form" />}></Route>
           ) : (
             <Route path="*" element={<Navigate to="/login" />}></Route>

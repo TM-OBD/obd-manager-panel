@@ -99,30 +99,54 @@ const UserDataForm = () => {
     success: false,
     vertical: "top",
     horizontal: "right",
+    message: "Помилка при з'єднанні з сервером",
   });
 
   const handleChangeTel = (value) => {
     setTel(value);
-    console.log(value);
   };
 
   const onSubmit = async (userData) => {
-    // Phone number without spaces
-    userData.tel = tel.replace(/\s/g, "");
-    console.log(userData);
-    const serverData = await sendUserData(userData);
-    const { success } = serverData;
-    console.log(serverData);
-    setAlert({ ...customAlert, open: true, success });
-    setTimeout(() => {
-      setAlert({ ...customAlert, open: false });
-    }, 2000);
+    try {
+      // Phone number without spaces
+      userData.tel = tel.replace(/\s/g, "");
 
-    resetField("name");
-    resetField("surname");
-    resetField("fathername");
-    resetField("email");
-    setTel("+380");
+      const serverData = await sendUserData(userData);
+
+      if (!serverData) {
+        setAlert({
+          ...customAlert,
+          open: true,
+          success,
+          message: "Помилка при отриманні даних з сервера",
+        });
+        setTimeout(() => {
+          setAlert({ ...customAlert, open: false });
+        }, 2000);
+        return;
+      }
+
+      const { success, message } = serverData;
+
+      // // Just for example:
+      // const message = "Користувач успишно зареестрованый";
+      // const success = true;
+
+      setAlert({ ...customAlert, open: true, success, message });
+      setTimeout(() => {
+        setAlert({ ...customAlert, open: false });
+      }, 2000);
+
+      resetField("name");
+      resetField("surname");
+      resetField("fathername");
+      resetField("email");
+      resetField("deviceId");
+      setTel("+380");
+      
+    } catch (e) {
+      console.error(`${e.name} + ${e.message}`);
+    }
   };
 
   return (
@@ -149,9 +173,7 @@ const UserDataForm = () => {
             variant="filled"
             sx={{ width: "100%" }}
           >
-            {alert.success
-              ? "Користувач успішно зареєстрований"
-              : "Помилка при з'єднанні з сервером"}
+            {customAlert.message}
           </Alert>
         </Snackbar>
       )}
@@ -334,9 +356,6 @@ const UserDataForm = () => {
                 sm: "14px",
                 xs: "10px",
               },
-            },
-            "& .css-gyyzhi-MuiInputBase-root-MuiOutlinedInput-root": {
-              // maxHeight: "30px"
             },
             "& .css-104c99h-MuiButtonBase-root-MuiIconButton-root": {
               padding: 0,
