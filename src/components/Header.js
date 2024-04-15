@@ -206,7 +206,15 @@ const Header = () => {
             <Box sx={{ flexGrow: 0, display: { md: "none", xs: "flex" } }}>
               <Tooltip title="Відкрити налаштування">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                  <Avatar
+                    alt="Manager"
+                    sx={{
+                      backgroundColor: (theme) =>
+                        theme.palette.primary.blue.medium,
+                    }}
+                  >
+                    M1
+                  </Avatar>
                 </IconButton>
               </Tooltip>
               <Menu
