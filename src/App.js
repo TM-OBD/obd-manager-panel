@@ -5,6 +5,7 @@ import UserDataForm from "./pages/UserDataForm/UserDataForm";
 import { useEffect, useState } from "react";
 import backgroundImage from "./images/Background.png";
 import styled from "@emotion/styled";
+import Header from "./components/Header";
 
 const StyledBackgroundImage = styled("img")`
   position: absolute;
@@ -42,6 +43,7 @@ function App() {
         backgroundColor: (theme) => theme.palette.primary.mainBg,
       }}
     >
+      <Header></Header>
       <Box
         sx={{
           position: "relative",
@@ -50,10 +52,10 @@ function App() {
           overflow: "hidden",
         }}
       >
-        <StyledBackgroundImage
+        {/* <StyledBackgroundImage
           src={backgroundImage}
           alt="Background"
-        ></StyledBackgroundImage>
+        ></StyledBackgroundImage> */}
         <Routes>
           {!managerLogined && (
             <Route
