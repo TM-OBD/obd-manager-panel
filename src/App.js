@@ -49,8 +49,9 @@ function App() {
 
       // Подписка на канал
       stompClient.connect({}, () => {
-        stompClient.subscribe("some_endpoint", () => { // тут должен быть ендпоинт для подписки
+        stompClient.subscribe("some_endpoint", (data) => { // тут должен быть ендпоинт для подписки
           // Обработка нового сообщения
+          console.log(data)
         });
       });
     } catch (e) {
