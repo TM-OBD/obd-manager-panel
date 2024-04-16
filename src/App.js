@@ -3,9 +3,13 @@ import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
 import Auth from "./pages/Auth/Auth";
 import UserDataForm from "./pages/UserDataForm/UserDataForm";
 import { useEffect, useState } from "react";
-import backgroundImage from "./images/Background.png";
+// import backgroundImage from "./images/Background.png";
 import styled from "@emotion/styled";
 import Header from "./components/Header";
+
+import io from "socket.io-client";
+import Stomp from "stompjs";
+import { connectToSocket } from "./shared/SocketFunctions";
 
 const StyledBackgroundImage = styled("img")`
   position: absolute;
@@ -22,6 +26,8 @@ function App() {
 
   const navigate = useNavigate();
 
+  // Effects ===================================================================
+
   useEffect(() => {
     if (!managerLogined) {
       navigate("/login");
@@ -30,6 +36,31 @@ function App() {
     navigate("/form");
     return;
   }, [managerLogined]);
+
+  useEffect(() => {
+    try {
+      const socket = connectToSocket();
+
+      if (!socket) {
+        console.log("Error during connection to socket");
+      }
+
+      const stompClient = Stomp.over(socket);
+
+      // Подписка на канал
+      stompClient.connect({}, () => {
+        stompClient.subscribe("some_endpoint", () => { // тут должен быть ендпоинт для подписки
+          // Обработка нового сообщения
+        });
+      });
+    } catch (e) {
+      console.error(e);
+    }
+
+    return () => {
+      stompClient.disconnect();
+    };
+  }, []);
 
   return (
     <Box // Внешний контейнер
