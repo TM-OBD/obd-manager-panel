@@ -12,15 +12,18 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import Logo from "../images/Logo.svg";
+import { useNavigate } from "react-router-dom";
 
 const pages = [
   {
     title: "Користувач",
     placeholder: "Ініціалізація нового користувача",
+    href: "/form",
   },
   {
     title: "OBD",
     placeholder: "Отримання real-time інформації з OBD",
+    href: "/obd",
   },
 ];
 const settings = ["Вихід"];
@@ -28,6 +31,8 @@ const settings = ["Вихід"];
 const Header = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+  const navigate = useNavigate();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -80,7 +85,10 @@ const Header = () => {
                 <Tooltip title={page.placeholder} key={"Tooltip-" + page.title}>
                   <Button
                     key={page.title}
-                    onClick={handleCloseNavMenu}
+                    onClick={() => {
+                      handleCloseNavMenu();
+                      navigate(page.href);
+                    }}
                     sx={{ my: 2, color: "white", display: "block" }}
                   >
                     {page.title}
@@ -182,7 +190,13 @@ const Header = () => {
                     title={page.placeholder}
                     key={"Tooltip-" + page.title}
                   >
-                    <MenuItem key={page.title} onClick={handleCloseNavMenu}>
+                    <MenuItem
+                      key={page.title}
+                      onClick={() => {
+                        handleCloseNavMenu();
+                        navigate(page.href);
+                      }}
+                    >
                       <Typography textAlign="center">{page.title}</Typography>
                     </MenuItem>
                   </Tooltip>

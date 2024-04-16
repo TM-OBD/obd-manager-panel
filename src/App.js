@@ -7,22 +7,24 @@ import { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import Header from "./components/Header";
 
-import io from "socket.io-client";
 import Stomp from "stompjs";
 import { connectToSocket } from "./shared/SocketFunctions";
+import OBD from "./pages/OBD/OBD";
 
-const StyledBackgroundImage = styled("img")`
-  position: absolute;
-  top: 0;
-  left: 0;
-  object-fit: cover;
-  min-width: 100%;
-  min-height: 100%;
-  z-index: 1;
-`;
+// const StyledBackgroundImage = styled("img")`
+//   position: absolute;
+//   top: 0;
+//   left: 0;
+//   object-fit: cover;
+//   min-width: 100%;
+//   min-height: 100%;
+//   z-index: 1;
+// `;
 
 function App() {
   const [managerLogined, setManagerLogined] = useState(true);
+  const [socketConnectionState, setSocketConnectionState] = useState(null);
+  const [stompConnectionState, setStompConnectionState] = useState(null);
 
   const navigate = useNavigate();
 
@@ -42,24 +44,26 @@ function App() {
       const socket = connectToSocket();
 
       if (!socket) {
-        console.log("Error during connection to socket");
+        return console.log("Error during connection to socket");
       }
 
       const stompClient = Stomp.over(socket);
 
-      // Подписка на канал
-      stompClient.connect({}, () => {
-        stompClient.subscribe("some_endpoint", (data) => { // тут должен быть ендпоинт для подписки
-          // Обработка нового сообщения
-          console.log(data)
-        });
-      });
+      if (!stompClient) {
+        return console.log("Error during connection to STOMP");
+      }
+
+      setSocketConnectionState(socket);
+      setStompConnectionState(stompClient);
+
     } catch (e) {
       console.error(e);
     }
 
     return () => {
-      stompClient.disconnect();
+      if (stompConnectionState) {
+        stompConnectionState.disconnect();
+      }
     };
   }, []);
 
@@ -97,6 +101,19 @@ function App() {
           )}
           {managerLogined && (
             <Route path="/form" element={<UserDataForm></UserDataForm>}></Route>
+          )}
+          {managerLogined && (
+            <Route
+              path="/obd"
+              element={
+                <OBD
+                  socketConnectionState={socketConnectionState}
+                  setSocketConnectionState={setSocketConnectionState}
+                  stompConnectionState={stompConnectionState}
+                  setStompConnectionState={setStompConnectionState}
+                ></OBD>
+              }
+            ></Route>
           )}
           {managerLogined ? (
             <Route path="*" element={<Navigate to="/form" />}></Route>
