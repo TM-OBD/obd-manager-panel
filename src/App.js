@@ -39,33 +39,33 @@ function App() {
     return;
   }, [managerLogined]);
 
-  useEffect(() => {
-    try {
-      const socket = connectToSocket();
+  // useEffect(() => {
+  //   try {
+  //     const socket = connectToSocket();
 
-      if (!socket) {
-        return console.log("Error during connection to socket");
-      }
+  //     if (!socket) {
+  //       return console.log("Error during connection to socket");
+  //     }
 
-      const stompClient = Stomp.over(socket);
+  //     const stompClient = Stomp.over(socket);
 
-      if (!stompClient) {
-        return console.log("Error during connection to STOMP");
-      }
+  //     if (!stompClient) {
+  //       return console.log("Error during connection to STOMP");
+  //     }
 
-      setSocketConnectionState(socket);
-      setStompConnectionState(stompClient);
+  //     setSocketConnectionState(socket);
+  //     setStompConnectionState(stompClient);
 
-    } catch (e) {
-      console.error(e);
-    }
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
 
-    return () => {
-      if (stompConnectionState) {
-        stompConnectionState.disconnect();
-      }
-    };
-  }, []);
+  //   return () => {
+  //     if (stompConnectionState) {
+  //       stompConnectionState.disconnect();
+  //     }
+  //   };
+  // }, []);
 
   return (
     <Box // Внешний контейнер
