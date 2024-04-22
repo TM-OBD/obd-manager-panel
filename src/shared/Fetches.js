@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const sendUserData = async (data) => {
   try {
-    const response = await axios.post("http://46.37.194.186:5001/api/v1/initial_user_data", data, {});
+    const response = await axios.post("http://46.37.194.186:5001/api/v1/client/associate", data, {});
     console.log("User data sent successfully:", response.data);
     return response.data;
   } catch (error) {
