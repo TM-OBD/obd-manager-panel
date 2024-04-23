@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { sendUserData } from "../../shared/Fetches";
 import { useState } from "react";
 import { MuiTelInput } from "mui-tel-input";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 const StyledForm = styled("form")`
   display: flex;
@@ -51,48 +52,18 @@ const StyledInput = styled("input")(({ theme }) => ({
   },
 }));
 
-const StyledButton = styled("input")(({ theme }) => ({
-  cursor: "pointer",
-  width: "100%",
-  backgroundColor: theme.palette.primary.blue.light,
-  transition: "background-color 0.3s",
-  color: theme.palette.primary.white.light,
-  fontSize: "18px",
-  border: "none",
-  borderRadius: "8px",
-  "&:hover": {
-    backgroundColor: theme.palette.primary.blue.medium,
-  },
-  [theme.breakpoints.up("xs")]: {
-    fontSize: "12px",
-    padding: "8px 4px 8px 4px",
-  },
-  [theme.breakpoints.up("sm")]: {
-    fontSize: "14px",
-    padding: "8px 4px 8px 4px",
-  },
-  [theme.breakpoints.up("md")]: {
-    fontSize: "18px",
-    padding: "16px 8px 16px 8px",
-  },
-  [theme.breakpoints.up("lg")]: {
-    fontSize: "22px",
-    padding: "16px 8px 16px 8px",
-  },
-  [theme.breakpoints.up("xl")]: {
-    fontSize: "24px",
-    padding: "16px 8px 16px 8px",
-  },
-}));
-
 const UserDataForm = () => {
+  // Form hook
   const {
     register,
     handleSubmit,
     formState: { errors },
     resetField,
   } = useForm();
+
+  // States
   const [tel, setTel] = useState("+380");
+  const [loading, setLoading] = useState(false);
 
   const [customAlert, setAlert] = useState({
     open: false,
@@ -102,11 +73,15 @@ const UserDataForm = () => {
     message: "Помилка при з'єднанні з сервером",
   });
 
+  // Fuctions
+
   const handleChangeTel = (value) => {
     setTel(value);
   };
 
   const onSubmit = async (userData) => {
+    setLoading(true);
+
     try {
       // Phone number without spaces
       userData.tel = tel.replace(/\s/g, "");
@@ -114,14 +89,20 @@ const UserDataForm = () => {
       const serverData = await sendUserData(userData);
 
       if (!serverData) {
+        setLoading(false);
         setAlert({
           ...customAlert,
           open: true,
-          success,
+          success: false,
           message: "Помилка при отриманні даних з сервера",
         });
         setTimeout(() => {
-          setAlert({ ...customAlert, open: false });
+          setAlert({
+            ...customAlert,
+            open: false,
+            success: false,
+            message: "",
+          });
         }, 2000);
         return;
       }
@@ -129,9 +110,10 @@ const UserDataForm = () => {
       const { success, message } = serverData;
 
       // // Just for example:
-      // const message = "Користувач успишно зареестрованый";
+      // const message = "Користувач успiшно зареєстрований";
       // const success = true;
 
+      setLoading(false);
       setAlert({ ...customAlert, open: true, success, message });
       setTimeout(() => {
         setAlert({ ...customAlert, open: false });
@@ -144,6 +126,7 @@ const UserDataForm = () => {
       resetField("deviceId");
       setTel("+380");
     } catch (e) {
+      setLoading(false);
       console.error(`${e.name} + ${e.message}`);
     }
   };
@@ -476,7 +459,40 @@ const UserDataForm = () => {
           )}
         </Box>
 
-        <StyledButton type="submit" />
+        {/* <StyledButton type="submit" /> */}
+        <LoadingButton
+          type="submit"
+          size="small"
+          loading={loading}
+          variant="contained"
+          sx={{
+            textTransform: "none",
+            color: (theme) => theme.palette.primary.white.light,
+            backgroundColor: (theme) => theme.palette.primary.blue.light,
+            fontSize: {
+              xl: "22px",
+              lg: "20px",
+              md: "18px",
+              sm: "14px",
+              xs: "12px",
+            },
+            padding: {
+              md: "16px 8px",
+              sm: "8px 4px",
+            },
+            "&.MuiButton-contained.Mui-disabled": {
+              backgroundColor: "#35566b",
+            },
+            "& .MuiCircularProgress-root": {
+              color: (theme) => theme.palette.primary.white.light,
+            },
+            "&:hover": {
+              backgroundColor: (theme) => theme.palette.primary.blue.medium,
+            },
+          }}
+        >
+          <span>Відправити</span>
+        </LoadingButton>
       </StyledForm>
     </Box>
   );
